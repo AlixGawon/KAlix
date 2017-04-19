@@ -30,17 +30,25 @@ public class ParkService {
             String[] splitted = line.split(",");
             list.add(new Park(splitted[0], splitted[1], splitted[2], splitted[3], splitted[4], splitted[5]));
 
-            //Comparator 사용해서 List에 있는 데이터 sorting 하기
-            Comparator c = new Comparator<Park>() { //MyComparator라는 클래스 대신 사용. 익명 컴페레터라고도 함. 여기서 에러뜨면 빨간 전구 눌러서 메서드를 생성하여 오버라이드 하면 됨
-                @Override
-                public int compare(Park o1, Park o2) {
-                    String first = o1.getcountry().toUpperCase();
-                    String second = o2.getcountry().toUpperCase();
+            //주별로 정리됨. 람다식으로 정리
 
-                    return first.compareTo(second);
-                }
-            };//;꼭 써줘야 함
-            Collections.sort(list, c);
+            Collections.sort(list, (o1, o2) -> {
+                String st1 = o1.getState();
+                String st2 = o2.getState();
+                return st1.compareTo(st2);
+            });
+
+            //Comparator 사용해서 List에 있는 데이터 sorting 하기
+//            Comparator c = new Comparator<Park>() { //MyComparator라는 클래스 대신 사용. 익명 컴페레터라고도 함. 여기서 에러뜨면 빨간 전구 눌러서 메서드를 생성하여 오버라이드 하면 됨
+//                @Override
+//                public int compare(Park o1, Park o2) {
+//                    String first = o1.getcountry().toUpperCase();
+//                    String second = o2.getcountry().toUpperCase();
+//
+//                    return first.compareTo(second);
+//                }
+//            };//;꼭 써줘야 함
+//            Collections.sort(list, c);
             System.out.println(list);
         }
     }
