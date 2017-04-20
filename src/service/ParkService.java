@@ -1,9 +1,12 @@
 package service;
 
+import com.opencsv.CSVReader;
 import model.Park;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -13,43 +16,41 @@ import java.util.List;
  * Created by danawacomputer on 2017-04-12.
  */
 public class ParkService {
-    public static void main(String[] args) throws Exception {
-        //정보 저장할 장소 만들기
-        List<Park> list = new ArrayList();
-        //csv 파일 읽기
-        BufferedReader br = new BufferedReader(new FileReader("src\\Parks.csv"));
-        br.readLine(); //첫 번째 라인 스킵. 안 그러면 String하고 int값 준 것이 혼선 올 수 있음.
 
-        //읽은 파일 while 문 돌려서 list 안에 넣기
-
-        String line = "";//while 문 돌릴 때 사용
-
-        while ((line = br.readLine()) != null) {
-
-            //String[]의 객체를 splitted로 생성한 후 , 단위로 나누고 list안에 넣는다.
-            String[] splitted = line.split(",");
-            list.add(new Park(splitted[0], splitted[1], splitted[2], splitted[3], splitted[4], splitted[5]));
-
-            //주별로 정리됨. 람다식으로 정리
-
-            Collections.sort(list, (o1, o2) -> {
-                String st1 = o1.getState();
-                String st2 = o2.getState();
-                return st1.compareTo(st2);
-            });
-
-            //Comparator 사용해서 List에 있는 데이터 sorting 하기
-//            Comparator c = new Comparator<Park>() { //MyComparator라는 클래스 대신 사용. 익명 컴페레터라고도 함. 여기서 에러뜨면 빨간 전구 눌러서 메서드를 생성하여 오버라이드 하면 됨
-//                @Override
-//                public int compare(Park o1, Park o2) {
-//                    String first = o1.getcountry().toUpperCase();
-//                    String second = o2.getcountry().toUpperCase();
-//
-//                    return first.compareTo(second);
-//                }
-//            };//;꼭 써줘야 함
-//            Collections.sort(list, c);
-            System.out.println(list);
+    public static String resolveCountry(String code) {
+        switch (code) {
+            case "US":
+                return "미국";
+            case "CA":
+                return "캐나다";
+            case "AU":
+                return "호주";
+            case "JP":
+                return "일본";
+            case "PR":
+                return "푸에르토리코";
+            default:
+                return "무명국"; //일부러 MX 멕시코 제외함.
         }
     }
+   public static List<Park> makeListFromCSV(String filename) {
+
+       List<Park> list = new ArrayList<>(); //container for Park objects. null 쓰지 않으려고. 예외가 발생하면 비어있는 list가 return 됨
+       try {
+           CSVReader reader = new CSVReader(new FileReader(filename)); //split 사용 안 해도 됨.
+
+
+           reader.readNext(); //skip the first line
+           String[] spl = null;
+           while ((spl = reader.readNext()) != null) {
+               list.add(new Park(spl[0],spl[1],spl[2],spl[3],spl[4],spl[5]));
+           }
+
+       } catch (FileNotFoundException e) {
+           e.printStackTrace();
+       } catch (IOException e) {
+           e.printStackTrace();
+       }
+       return list;//정상적으로 끝나지 않을 때를 대비 하지만 null 을 return 하는 것은 별로 옳은 일 아님 의도를 알 수 없음.
+   }
 }

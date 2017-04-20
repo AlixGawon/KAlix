@@ -29,10 +29,11 @@ public class SortingFilteringNPrinting {
             //sorting 하기
 
             Collections.sort(list, (a, b) -> a.getParkName().compareTo(b.getParkName()));
+            System.out.println(list.size());
 
             //filtering 하기
 
-            list.removeIf(p -> p.getParkName() == null || p.getParkName().equals(""));
+            list.removeIf(p -> p.getcountry().equals("US"));
 
             //Printing 하기
 
