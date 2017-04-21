@@ -1,17 +1,13 @@
 package salaryNStream;
 
 import com.opencsv.CSVReader;
-
-import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.*;
 
-/**
- * Created by danawacomputer on 2017-04-20.
- */
+
 public class SalaryNStreamService {
     public static void main(String[] args) {
         //미리 데이터 넣을 장소 지정
@@ -37,8 +33,9 @@ public class SalaryNStreamService {
         String[] spl = null;//저절로 split 시켜주니까 변수명 이렇게 지정
         try {
             while ((spl = reader.readNext()) != null) {
-                list.add(new SalaryNStream(LocalDate.of(Integer.parseInt(spl[0]),1,1),
-                        spl[1], spl[2], spl[3], Integer.parseInt(spl[4])));
+
+                LocalDate d = LocalDate.of(Integer.parseInt(spl[0]),1,1); //factory Method of로 객체 생성
+                list.add(new SalaryNStream(d, spl[1], spl[2], spl[3], Integer.parseInt(spl[4])));
             }//LocalDate로 바꾸려면 of 써야 함 그리고 나서 인티저 타입으로 바꿔줘야 함.
         } catch (IOException e) {
             e.printStackTrace();
@@ -51,7 +48,7 @@ public class SalaryNStreamService {
 
         OptionalDouble twentyCentAver = list.stream() //mapToInt & average 쓰려면 OptionalDouble 써야함
 
-                .filter(x -> x.getYearId().getYear() < 2000) // 애초에 LocalDate type 이니까 이 메서드를 이용하기.
+                .filter(x -> x.getYearId().getYear() < 2000) // 애초에 LocalDate type 이니까 getYear() 메서드를 이용하기.
                 .mapToInt(x -> x.getSalary()) //Salary 를 구해야 하니까
                 .average();
         System.out.println(twentyCentAver);
